@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QR Redirect</title>
+  <style>
+    body{background:#000;color:#fff;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;font-family:system-ui,Arial}
+    .box{text-align:center;max-width:520px;padding:20px}
+    .small{color:#bbb;font-size:0.9rem}
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>Redirecting…</h1>
+    <p class="small">If you are not redirected automatically, <a id="fallback" href="#" style="color:#fff">click here</a>.</p>
+  </div>
+
+  <script>
+    // ----- CONFIGURE these -----
+    // URL of the Google Apps Script Web App (see README instructions) that accepts POST requests
+    const APPS_SCRIPT_WEBHOOK = 'https://script.google.com/macros/s/AKfycbwjKXBQoUhLPi-7UW0okcDwqS4DaPHysY77QRw2uQ2Wkd19YTqFJpkBWgGxZd8OJZe0/exec';
+    // final destination for your QR (main site)
+    const REDIRECT_URL = 'https://epicfrankmeister.github.io/artist-link-page/';
+    // ---------------------------
+
+    document.getElementById('fallback').href = REDIRECT_URL;
+
+    // Helper: get IP-based geo information via a public API (ipapi.co). This returns city/region/country and IP.
+    function fetchGeo(){
+      return fetch('https://ipapi.co/json/').then(r=>r.json()).catch(()=>({}));
+    }
+
+    // Send the log to your Apps Script webhook. We use mode:'no-cors' so the request is fire-and-forget
+    function sendLog(payload){
+      if(!APPS_SCRIPT_WEBHOOK || APPS_SCRIPT_WEBHOOK.includes('REPLACE_WITH')){
+        console.log('Apps Script webhook not configured. Log payload:', payload);
+        return Promise.resolve();
+      }
+      return fetch(APPS_SCRIPT_WEBHOOK, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      }).catch(()=>{});
+    }
+
+    // main
+    (async function(){
+      const geo = await fetchGeo();
+      const payload = {
+        time: new Date().toISOString(),
+        // DO NOT include IP address — storing IPs is disabled by design
+        city: geo.city || '',
+        region: geo.region || '',
+        country: geo.country_name || geo.country || '',
+        userAgent: navigator.userAgent || '',
+        source: 'qr'
+      };
+
+      // send log (fire and forget)
+      sendLog(payload);
+
+      // redirect quickly (give the log ~700ms to send)
+      setTimeout(()=> window.location.replace(REDIRECT_URL), 700);
+    })();
+  </script>
+</body>
+</html>
