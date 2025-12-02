@@ -6,6 +6,31 @@
   <title>PRIMATES IN MARYLAND</title>
   <meta name="description" content="Saggiterian out NOVEMBER 14" />
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* secret bottom-right invisible button — clickable on all sizes */
+    #secretCorner {
+      position: fixed;
+      right: 0;
+      bottom: 0;
+      width: 64px;
+      height: 64px;
+      z-index: 9999;
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      cursor: pointer;
+      opacity: 0; /* fully invisible */
+      -webkit-appearance: none;
+      appearance: none;
+      outline: none;
+      pointer-events: auto;
+    }
+    /* slightly larger touch target on small screens */
+    @media (max-width: 480px) {
+      #secretCorner { width: 96px; height: 96px; }
+    }
+  </style>
 </head>
 <body>
   <main class="container" role="main">
@@ -49,6 +74,8 @@
 
   </main>
 
+  <button id="secretCorner" aria-hidden="true" title="" type="button"></button>
+
   <script>
     document.getElementById('copyEmail').addEventListener('click', function () {
       const email = 'booking@yourartist.com';
@@ -66,6 +93,45 @@
         document.body.removeChild(ta);
       }
     });
+
+    // secret corner redirect — works for click and touch
+    (function(){
+      var sc = document.getElementById('secretCorner');
+      if(!sc) return;
+      function go() { window.location.href = 'https://bigrat.monster'; }
+      sc.addEventListener('click', go);
+      sc.addEventListener('touchstart', go, { passive: true });
+
+      // helper: press the "b" key to briefly reveal and focus the secret button
+      // this makes it easy to find during testing without permanently showing it
+      var revealTimer = null;
+      function revealSecret() {
+        if (!sc) return;
+        // make visible and add a highlight
+        sc.style.transition = 'opacity 150ms ease, box-shadow 150ms ease';
+        sc.style.opacity = '0.6';
+        sc.style.boxShadow = '0 0 0 3px rgba(255,0,0,0.35)';
+        sc.focus({ preventScroll: true });
+        if (revealTimer) clearTimeout(revealTimer);
+        revealTimer = setTimeout(function(){
+          sc.style.opacity = '0';
+          sc.style.boxShadow = '';
+          revealTimer = null;
+        }, 3000);
+      }
+
+      // listen for keypress anywhere on page
+      window.addEventListener('keydown', function (e) {
+        // reveal on lowercase or uppercase 'b'
+        if (e.key === 'b' || e.key === 'B') {
+          revealSecret();
+        }
+      });
+
+      // also allow focusing via Tab even though element is invisible
+      // ensure it can be tabbed to: give it a tabindex if not present
+      if (!sc.hasAttribute('tabindex')) sc.setAttribute('tabindex', '0');
+    })();
   </script>
 </body>
 </html>
