@@ -8,19 +8,30 @@
 }
 
 *{box-sizing:border-box}
-html,body{height:auto}
+html,body{height:100%}
 body{
   margin:0;
   font-family: "Cinzel", "Garamond", "Times New Roman", serif;
-  background: linear-gradient(180deg,var(--bg1),var(--bg2));
+  /* blood-drip image at the top, layered over the dark gradient */
+  background-color: var(--bg1) !important;
+  background-image:
+    url('../assets/blood-drip.png'),
+    radial-gradient(600px 200px at 90% 95%, rgba(255,0,0,0.035), transparent 10%),
+    linear-gradient(180deg,var(--bg1),var(--bg2));
+  /* place the drip image at the very top and make it span full width */
+  background-position: top center, 90% 95%, center;
+  background-repeat: no-repeat, no-repeat, no-repeat;
+  background-size: 100% auto, cover, cover;
+  background-blend-mode: overlay, overlay, normal;
+  background-attachment: scroll, fixed, fixed !important;
   color:var(--accent);
   -webkit-font-smoothing:antialiased;
   -moz-osx-font-smoothing:grayscale;
   display:block;
   padding:36px 16px;
   -webkit-overflow-scrolling:touch;
-  /* subtle blood-stain vignette */
-  background-image: radial-gradient(600px 200px at 90% 95%, rgba(255,0,0,0.02), transparent 10%);
+  /* extra subtle noise using repeating-linear-gradient to avoid flatness */
+  box-shadow: inset 0 120px 200px rgba(0,0,0,0.25);
   min-height:100vh;
 }
 
