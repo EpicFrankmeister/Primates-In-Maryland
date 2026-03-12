@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Involved - The Morning Brief</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="min-h-screen bg-logo-yellow text-logo-black font-sans">
+        <!-- Header -->
+        <header class="bg-logo-yellow text-logo-black rounded-bottom-lg shadow-lg">
+            <div class="max-w-6xl mx-auto px-6 py-8 flex items-center justify-between">
+                <img src="logo.png" alt="The Morning Brief Logo" style="height:64px;width:64px;" />
+                <nav class="space-x-6 text-sm">
+                    <a href="index.html" class="nav-link">Home</a>
+                    <a href="video.html" class="nav-link">Today's Show</a>
+                    <a href="hosts.html" class="nav-link">Hosts</a>
+                    <a href="get-involved.html" class="nav-link">Get Involved</a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Get Involved / Contact Form -->
+        <section id="get-involved" class="w-full">
+            <div class="max-w-6xl mx-auto px-6 py-8">
+                <div class="card form-card rounded-lg bg-logo-white shadow-xl">
+                    <h2 class="text-2xl font-semibold mb-2 text-logo-black">Have a story that needs sharing?</h2>
+                    <p class="form-note">If you have a tip, story idea or you'd like to appear on the show, tell us a bit about it below and we'll get back to you.</p>
+                    <form id="involve-form">
+                        <div class="form-row">
+                            <input class="form-input" type="text" name="name" id="name" placeholder="Your name" required />
+                            <input class="form-input" type="email" name="email" id="email" placeholder="Your email" required />
+                        </div>
+                        <div style="margin-top:0.75rem;">
+                            <textarea class="form-textarea" name="message" id="message" placeholder="Tell us your story or idea" required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn form-btn">Send to the show</button>
+                        </div>
+                    </form>
+                    <p id="involve-status" style="display:none;margin-top:0.5rem;" class="text-sm text-dark-charcoal"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-logo-teal text-logo-yellow rounded-top-lg mt-20">
+            <div class="max-w-6xl mx-auto px-6 py-10 flex flex-row justify-between items-center gap-4 footer-responsive">
+                <p class="text-sm">© 2026 The Morning Brief</p>
+                <div class="space-x-4 text-sm">
+                    <a href="#" class="footer-link">Instagram</a>
+                    <a href="#" class="footer-link">X</a>
+                    <a href="get-involved.html" class="footer-link">Contact</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        (function(){
+            const form = document.getElementById('involve-form');
+            const status = document.getElementById('involve-status');
+            form && form.addEventListener('submit', function(e){
+                e.preventDefault();
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const message = document.getElementById('message').value.trim();
+                if(!name || !email || !message){
+                    status.style.display = 'block';
+                    status.textContent = 'Please complete all fields.';
+                    status.style.color = 'var(--pink-dark)';
+                    return;
+                }
+
+                // Simulate sending email: show a sending state, then success
+                status.style.display = 'block';
+                status.style.color = 'var(--dark-charcoal)';
+                status.textContent = 'Sending...';
+                const btn = form.querySelector('button[type=submit]');
+                btn.disabled = true;
+                const originalText = btn.textContent;
+                btn.textContent = 'Sending...';
+
+                setTimeout(() => {
+                    status.textContent = 'Message sent — thanks! We will be in touch.';
+                    btn.textContent = originalText;
+                    btn.disabled = false;
+                    form.reset();
+                }, 1400);
+            });
+        })();
+    </script>
+</body>
+</html>
